@@ -15,7 +15,6 @@ from utils.linkedin_summary_generator import generate_linkedin_summary
 from utils.domain_companies import get_companies_by_domain
 
 
-
 # Constants
 MODEL = "gemma:2b"
 LOG_FILE = "chat_log.txt"
@@ -25,124 +24,66 @@ st.set_page_config(page_title="Career Copilot AI", layout="wide", initial_sideba
 
 # ---- DARK MODE CSS ----
 
-def apply_final_saas_style():
+def apply_flat_two_column_theme():
     st.markdown("""
     <style>
-    /* Hide Streamlit system elements */
+    /* Clean flat layout */
     #MainMenu, header, footer {visibility: hidden;}
 
-    /* Sidebar Styling */
-    section[data-testid="stSidebar"] {
-        background-color: #0f172a;
-        padding: 1.5rem 1rem;
-        color: #e2e8f0;
-        border-right: 1px solid #1e293b;
-    }
-
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3, 
-    section[data-testid="stSidebar"] p, 
-    section[data-testid="stSidebar"] label {
-        color: #f8fafc !important;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    .stSidebar .stButton>button {
-        background-color: #3b82f6;
-        color: white;
-        border-radius: 6px;
-        padding: 0.45rem 0.9rem;
-        margin-bottom: 10px;
-        font-weight: 500;
-        font-size: 0.85rem;
-        border: none;
-        text-align: left;
-        transition: all 0.3s ease;
-    }
-
-    .stSidebar .stButton>button:hover {
-        background-color: #2563eb;
-        transform: scale(1.02);
-    }
-
-    /* Main Area */
     .block-container {
+        padding: 1.5rem 2rem;
         background-color: #0f172a;
-        padding: 1.8rem 2rem;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Left pane styling */
+    div[data-testid="column"]:first-child {
+        background-color: #1e293b;
+        border-radius: 12px;
+        padding: 2rem 1.5rem;
+        color: #f1f5f9;
+        border: 1px solid #334155;
+    }
+
+    /* Right pane styling */
+    div[data-testid="column"]:last-child {
+        background-color: #111827;
+        padding: 2rem 2rem;
+        border-radius: 12px;
+        color: #f1f5f9;
+        border: 1px solid #334155;
     }
 
     h1, h2, h3 {
-        color: #f8fafc;
+        color: #ffffff;
+        font-size: 1.7rem;
         font-weight: 700;
-        font-size: 1.4rem;
-        margin-top: 1.2rem;
     }
 
-    hr {
-        border: 1px solid #334155;
-        margin: 1.5rem 0;
-    }
-
-    .stTextInput>div>input,
-    .stTextArea>div>textarea {
+    .stTextInput input, .stTextArea textarea, .stSelectbox div div input {
         background-color: #1e293b;
-        color: #f8fafc;
+        color: #f1f5f9;
         border-radius: 6px;
-        border: 1px solid #475569;
-        padding: 0.6rem;
-        font-size: 0.9rem;
+        border: 1px solid #334155;
     }
 
     .stButton>button {
         background-color: #3b82f6;
         color: white;
-        font-weight: 600;
-        border-radius: 6px;
         border: none;
-        padding: 0.45rem 1rem;
-        font-size: 0.85rem;
+        border-radius: 6px;
+        font-weight: 600;
+        padding: 10px 20px;
         margin-top: 10px;
-        transition: all 0.3s ease;
     }
 
     .stButton>button:hover {
         background-color: #2563eb;
-        transform: scale(1.02);
     }
-
-    .stMarkdown {
-        color: #f1f5f9;
-    }
-
-    div[data-testid="metric-container"] {
-        background-color: #1e293b;
-        border: 1px solid #334155;
-        border-radius: 10px;
-        padding: 10px;
-        color: #f1f5f9;
-    }
-
-    .stFileUploader>div>div {
-        background-color: #1e293b;
-        border: 1px dashed #64748b;
-    }
-
-    .css-1aumxhk {
-        background: none !important;
-    }
-
     </style>
     """, unsafe_allow_html=True)
 
-st.set_page_config(
-    page_title="Career Copilot AI",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-apply_final_saas_style()
+apply_flat_two_column_theme()
 
 
 # ---- SESSION STATE ----
@@ -151,9 +92,10 @@ for key in ["chat_history", "resume_data", "resume_file", "resume_text", "interv
         st.session_state[key] = [] if "history" in key else None
 
 # ---- SIDEBAR INPUTS ----
+
 with st.sidebar:
     st.title("🎯 Career Copilot AI")
-
+    
     st.markdown("## 📄 Resume Upload")
     uploaded_file = st.file_uploader("Upload your resume (PDF only)", type="pdf")
     if uploaded_file:
@@ -167,13 +109,14 @@ with st.sidebar:
         except Exception as e:
             st.error(f"❌ Error: {e}")
 
-    st.markdown("---")
     st.markdown("## 🧰 Resume Tools")
 
     if st.button("📊 Resume Score"):
         st.session_state.run_resume_score = True
 
     jd_text = st.text_area("📋 Paste Job Description")
+    st.session_state.jd_text = jd_text
+
     if st.button("🔍 JD Match %"):
         st.session_state.run_jd_match = True
 
@@ -194,19 +137,21 @@ with st.sidebar:
         st.session_state.run_gap_analysis = True
 
     st.markdown("---")
-    st.markdown("## ⚙️ Controls")
-
-    if st.button("🧹 Clear Chat"):
+    st.markdown("## 🧹 Maintenance")
+    if st.button("🧼 Clear Chat"):
         st.session_state.chat_history = []
         open(LOG_FILE, "w").close()
-        st.success("✅ Chat history cleared!")
+        st.success("✅ Chat cleared.")
 
     if st.session_state.chat_history:
         file_path = export_chat_to_pdf(st.session_state.chat_history)
         with open(file_path, "rb") as f:
             st.download_button("📄 Download Chat", f, "career_chat.pdf", mime="application/pdf")
 
+
+
 # ---- MAIN UI AREA ----
+
 st.markdown("## 💬 Career Chat Assistant")
 for entry in st.session_state.chat_history:
     with st.chat_message(entry["role"]):
@@ -233,6 +178,7 @@ if user_input:
                 st.error(f"❌ Error: {e}")
 
 st.markdown("<hr />", unsafe_allow_html=True)
+
 
 # ----------------- Feature 5: Location-Based Salary Insights -----------------
 st.subheader("📍 Location-Based Salary Insights")
