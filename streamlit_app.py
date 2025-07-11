@@ -35,13 +35,14 @@ def apply_flat_two_column_theme():
         padding: 1.5rem 2rem;
         background-color: #0f172a;
         font-family: 'Segoe UI', sans-serif;
+        font-size: 0.92rem;
     }
 
     /* Left pane styling */
     div[data-testid="column"]:first-child {
         background-color: #1e293b;
         border-radius: 12px;
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1rem;
         color: #f1f5f9;
         border: 1px solid #334155;
     }
@@ -49,7 +50,7 @@ def apply_flat_two_column_theme():
     /* Right pane styling */
     div[data-testid="column"]:last-child {
         background-color: #111827;
-        padding: 2rem 2rem;
+        padding: 1.5rem 1rem;
         border-radius: 12px;
         color: #f1f5f9;
         border: 1px solid #334155;
@@ -57,25 +58,29 @@ def apply_flat_two_column_theme():
 
     h1, h2, h3 {
         color: #ffffff;
-        font-size: 1.7rem;
-        font-weight: 700;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
     }
 
     .stTextInput input, .stTextArea textarea, .stSelectbox div div input {
         background-color: #1e293b;
         color: #f1f5f9;
         border-radius: 6px;
+        font-size: 0.88rem;
         border: 1px solid #334155;
+        padding: 0.4rem 0.6rem;
     }
 
     .stButton>button {
         background-color: #3b82f6;
         color: white;
+        font-size: 0.85rem;
         border: none;
-        border-radius: 6px;
+        border-radius: 5px;
         font-weight: 600;
-        padding: 10px 20px;
-        margin-top: 10px;
+        padding: 6px 14px;
+        margin-top: 8px;
     }
 
     .stButton>button:hover {
@@ -83,6 +88,7 @@ def apply_flat_two_column_theme():
     }
     </style>
     """, unsafe_allow_html=True)
+
 
 apply_flat_two_column_theme()
 
