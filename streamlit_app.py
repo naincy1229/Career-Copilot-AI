@@ -13,6 +13,7 @@ from datetime import datetime
 import os
 from utils.linkedin_summary_generator import generate_linkedin_summary
 from utils.domain_companies import get_companies_by_domain
+from deep_translator import GoogleTranslator
 
 
 # Constants
