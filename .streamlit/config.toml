@@ -1,5 +1,5 @@
 [server]
-port = 8501
+port = "$PORT"
 enableCORS = false
 enableXsrfProtection = false
 headless = true
