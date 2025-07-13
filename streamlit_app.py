@@ -10,10 +10,14 @@ from utils.parse_jobdesc import extract_text_from_txt
 from utils.ats_score_calculator import calculate_ats_score
 from utils.cover_letter_generator import generate_cover_letter
 from datetime import datetime
-import os
 from utils.linkedin_summary_generator import generate_linkedin_summary
 from utils.domain_companies import get_companies_by_domain
 from deep_translator import GoogleTranslator
+
+import os
+os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
+os.environ["STREAMLIT_SERVER_PORT"] = os.getenv("PORT", "10000")
+
 
 
 # Constants
@@ -498,9 +502,14 @@ with st.form("star_feedback_form"):
 
 
 
+
 st.markdown("""
     <hr style='border: 1px solid #334155; margin-top: 2rem;'>
     <div style='text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 0.8rem;'>
         🚀 Built with ❤️ by <strong style='color: #facc15;'>Naincy</strong>
     </div>
 """, unsafe_allow_html=True)
+
+
+
+
