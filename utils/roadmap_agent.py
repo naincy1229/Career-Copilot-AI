@@ -1,23 +1,43 @@
-from transformers import pipeline
+# chains/roadmap_agent.py
 
-def generate_learning_roadmap(resume_data, user_query, model="distilgpt2"):
-    """
-    Generate a learning roadmap based on resume content and career goal.
-    """
-    text_input = f"""
-    Resume Summary:
-    {resume_data}
+import streamlit as st
+from transformers import pipeline, set_seed
 
-    User Goal:
-    {user_query}
+@st.cache_resource
+def load_text_gen_model():
+    try:
+        return pipeline("text-generation", model="distilgpt2")
+    except Exception as e:
+        st.error(f"🚨 Error loading model: {e}")
+        return None
 
-    Based on the resume and user's career goal, create a step-by-step 3-month personalized learning roadmap including resources, skills to focus on, and weekly goals.
-    """
+generator = load_text_gen_model()
+
+def generate_learning_roadmap(resume_data, user_query):
+    if not generator:
+        return "❌ Model loading failed. Please try again later."
+
+    prompt = f"""
+Resume Summary:
+{resume_data}
+
+Career Goal:
+{user_query}
+
+Create a detailed and personalized 3-month learning roadmap to help the user achieve the goal. Include:
+- Weekly milestones
+- Skills to focus on
+- Recommended online resources (e.g., Coursera, YouTube, GitHub)
+- Tools or projects to build
+"""
 
     try:
-        generator = pipeline("text-generation", model=model)
-        response = generator(text_input, max_length=512, num_return_sequences=1, do_sample=True)
-        roadmap = response[0]["generated_text"].split("User Goal:")[-1].strip()
+        set_seed(42)
+        output = generator(prompt, max_length=512, num_return_sequences=1, do_sample=True)[0]["generated_text"]
+
+        # Clean and return only the relevant part
+        roadmap = output.split("Career Goal:")[-1].strip()
         return "🧭 **Your AI Learning Roadmap**\n\n" + roadmap
+
     except Exception as e:
         return f"❌ Failed to generate roadmap: {e}"
