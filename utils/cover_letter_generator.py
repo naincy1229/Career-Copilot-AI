@@ -1,12 +1,21 @@
 from transformers import pipeline
 
-def generate_cover_letter(resume_text, job_description, model="microsoft/DialoGPT-medium"):
-    # Limit input to avoid long delays
+# Use a more suitable model for text generation
+generator = pipeline(
+    "text-generation",
+    model="gpt2",  # You can also try 'EleutherAI/gpt-neo-125M' or 'tiiuae/falcon-7b-instruct' if memory allows
+    tokenizer="gpt2"
+)
+
+def generate_cover_letter(resume_text, job_description):
+    """
+    Generate a concise, professional cover letter from resume and JD.
+    """
     resume_text = resume_text[:1000]
     job_description = job_description[:1000]
 
     prompt = f"""
-Write a professional and concise cover letter for the job described below.
+Write a concise and professional cover letter tailored to the following job.
 
 Job Description:
 {job_description}
@@ -17,7 +26,9 @@ Candidate Resume:
 Cover Letter:
 """
 
-    generator = pipeline("text-generation", model=model)
-    output = generator(prompt, max_length=400, num_return_sequences=1, do_sample=True)
-    return output[0]["generated_text"].replace(prompt, "").strip()
-
+    try:
+        output = generator(prompt, max_length=400, num_return_sequences=1, do_sample=True)
+        letter = output[0]["generated_text"].replace(prompt, "").strip()
+        return letter
+    except Exception as e:
+        return f"❌ Error generating cover letter: {e}"

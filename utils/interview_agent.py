@@ -17,6 +17,12 @@ TECHNICAL_QUESTIONS = [
     "How do you keep up with the latest tech trends?"
 ]
 
+# Load classifier globally (better for Render)
+classifier = pipeline(
+    "text-classification",
+    model="distilbert-base-uncased-finetuned-sst-2-english"
+)
+
 def generate_mock_interview_question(resume_data):
     """
     Select a random question based on resume data.
@@ -28,16 +34,15 @@ def generate_mock_interview_question(resume_data):
         selected = random.choice(BASIC_QUESTIONS)
     return f"🎤 Interview Question: {selected}"
 
-def analyze_interview_response(response, model="distilbert-base-uncased"):
+def analyze_interview_response(response):
     """
     Evaluate the quality of a user's interview answer.
     """
-    classifier = pipeline("text-classification", model="distilbert-base-uncased-finetuned-sst-2-english")
     try:
         result = classifier(response)
         label = result[0]["label"]
         score = result[0]["score"]
-        sentiment = f"✅ Positive" if label == "POSITIVE" else "⚠️ Needs Improvement"
+        sentiment = "✅ Positive" if label == "POSITIVE" else "⚠️ Needs Improvement"
         return f"🧠 Analysis: {sentiment} (Confidence: {score:.2f})"
     except Exception as e:
         return f"❌ Error analyzing response: {e}"
