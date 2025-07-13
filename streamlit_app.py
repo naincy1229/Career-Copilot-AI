@@ -2,7 +2,7 @@ import streamlit as st
 from utils.parse_resume import parse_resume
 from agents.career_qa import answer_career_question
 from agents.role_recommender import suggest_roles
-from agents.roadmap_agent import generate_learning_roadmap
+from utils.roadmap_agent import generate_learning_roadmap
 from utils.resume_score import calculate_resume_score
 from utils.jd_matcher import compute_jd_match
 from utils.pdf_generator import export_chat_to_pdf
