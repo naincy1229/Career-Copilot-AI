@@ -21,7 +21,7 @@ os.environ["STREAMLIT_SERVER_PORT"] = os.getenv("PORT", "10000")
 
 
 # Constants
-MODEL = "gemma:2b"
+MODEL = "distilgpt2"  # Light and works perfectly
 LOG_FILE = "chat_log.txt"
 
 # ---- CONFIGURATION ----
