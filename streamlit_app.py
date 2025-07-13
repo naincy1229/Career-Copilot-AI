@@ -14,11 +14,6 @@ from utils.linkedin_summary_generator import generate_linkedin_summary
 from utils.domain_companies import get_companies_by_domain
 from deep_translator import GoogleTranslator
 
-import os
-os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
-os.environ["STREAMLIT_SERVER_PORT"] = os.getenv("PORT", "10000")
-
-
 
 # Constants
 MODEL = "distilgpt2"  # Light and works perfectly
