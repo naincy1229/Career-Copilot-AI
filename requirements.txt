@@ -13,4 +13,4 @@ numpy==1.24.4
 Cython==0.29.36
 pymupdf==1.23.7
 transformers==4.38.2
-torch==2.0.1  # ✅ Add this
+torch==2.2.2
